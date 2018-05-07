@@ -1,0 +1,32 @@
+{
+  "name": "cashbar",
+  "version": "0.1.0",
+  "description": "An Electron based menubar application",
+  "license": "MIT",
+  "author": "John Easton",
+  "repository": "https://github.com/johneas10/cashbar",
+  "devDependencies": {
+    "electromon": "1.0.9",
+    "electron": "2.0.0",
+    "electron-builder": "20.11.1",
+    "eslint": "4.19.1",
+    "eslint-config-airbnb-base": "12.1.0",
+    "eslint-plugin-import": "2.11.0",
+    "fetch-mock": "6.3.0"
+  },
+  "dependencies": {
+    "node-fetch": "2.1.2"
+  },
+  "main": "main.js",
+  "scripts": {
+    "dist": "electron-builder",
+    "start": "electron .",
+    "start:watch": "electromon ."
+  },
+  "build": {
+    "appId": "io.johneas.cashbar",
+    "mac": {
+      "icon": "images/app-icon.png"
+    }
+  }
+}
