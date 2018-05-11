@@ -14,7 +14,8 @@
     "eslint": "4.19.1",
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-plugin-import": "2.11.0",
-    "fetch-mock": "6.3.0"
+    "fetch-mock": "6.3.0",
+    "standard-version": "4.3.0"
   },
   "dependencies": {
     "node-fetch": "2.1.2"
