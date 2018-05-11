@@ -9,6 +9,7 @@ let noInternetNotification;
 let payload;
 let selectedTitle = 'usd';
 let tray;
+let appMenu;
 
 // return bool so setTitle knows if it should add a '+'
 const isPositive = title => (title > 0);
@@ -45,6 +46,11 @@ const setTitle = () => {
 
 // toggle title between USD, BTC & Change %
 const toggleTitle = (title) => {
+  // uncheck/check selected menu item
+  appMenu.getMenuItemById(selectedTitle).checked = false;
+  appMenu.getMenuItemById(title).checked = true;
+
+  //
   if (selectedTitle !== title) {
     selectedTitle = title;
   }
@@ -87,27 +93,33 @@ app.on('ready', async () => {
   setTitle();
 
   // create menu
-  const appMenu = Menu.buildFromTemplate([
+  appMenu = Menu.buildFromTemplate([
 
     // USD/BCH & BTC/BCH
-    { label: 'USD', type: 'radio', click() { toggleTitle('usd'); setTitle(); } },
-    { label: 'BTC', type: 'radio', click() { toggleTitle('btc'); setTitle(); } },
+    {
+      label: 'USD', sublabel: 'test', type: 'checkbox', id: 'usd', click() { toggleTitle('usd'); setTitle(); },
+    },
+    {
+      label: 'BTC', type: 'checkbox', id: 'btc', click() { toggleTitle('btc'); setTitle(); },
+    },
 
     // % change in USD
-    { label: 'Change % 1hr', type: 'radio', click() { toggleTitle('change1hrUsd'); setTitle(); } },
-    { label: 'Change % 24hr', type: 'radio', click() { toggleTitle('change24hrsUsd'); setTitle(); } },
-    { label: 'Change % 7d', type: 'radio', click() { toggleTitle('change7daysUsd'); setTitle(); } },
-
-    { type: 'separator' },
-
-    // about menu
     {
-      label: 'About',
+      label: 'Change %',
       submenu: [
-        { label: 'Check for updates', click() { shell.openExternal('https://github.com/johneas10/cashBar/releases'); } },
-        { label: `Version v${pkg.version}`, enabled: false },
+        {
+          label: '1 Hour', type: 'checkbox', id: 'change1hrUsd', click() { toggleTitle('change1hrUsd'); setTitle(); },
+        },
+        {
+          label: '24 Hours', type: 'checkbox', id: 'change24hrsUsd', click() { toggleTitle('change24hrsUsd'); setTitle(); },
+        },
+        {
+          label: '7 Days', type: 'checkbox', id: 'change7daysUsd', click() { toggleTitle('change7daysUsd'); setTitle(); },
+        },
       ],
     },
+
+    { type: 'separator' },
 
     // contact menu
     {
@@ -117,12 +129,24 @@ app.on('ready', async () => {
         { label: 'Github', click() { shell.openExternal('https://github.com/johneas10/cashBar'); } },
       ],
     },
+
+    // about menu
+    {
+      label: 'About',
+      submenu: [
+        { label: `v${pkg.version}`, enabled: false },
+        { label: 'Check for updates', click() { shell.openExternal('https://github.com/johneas10/cashBar/releases'); } },
+      ],
+    },
+
     { type: 'separator' },
     { label: 'Quit', role: 'quit' },
   ]);
 
   // build menu with template, appMenu
   tray.setContextMenu(appMenu);
+
+  appMenu.getMenuItemById('usd').checked = true;
 
   // rock the cashbar!
   tray.on('right-click', () => shell.openExternal('https://www.youtube.com/watch?v=bJ9r8LMU9bQ'));
