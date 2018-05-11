@@ -3,7 +3,7 @@ const path = require('path');
 const getPayload = require('./utils/getPayload');
 const pkg = require('./package.json');
 
-const iconsDir = path.join(__dirname, 'images');
+const imagesDir = path.join(__dirname, 'images');
 
 let noInternetNotification;
 let payload;
@@ -72,14 +72,14 @@ app.dock.hide();
 
 app.on('ready', async () => {
   // menubar icon
-  const icon = `${iconsDir}/icon.png`;
+  const icon = `${imagesDir}/icon.png`;
 
   // create notification for no internet
   noInternetNotification = new Notification({
     title: 'CashBar',
     subtitle: 'No internet connection detected.',
     body: 'I\'ll keep trying until it\'s back.',
-    icon: `${iconsDir}/app-Icon.png`,
+    icon: `${imagesDir}/app-icon.png`,
   });
 
   // get payload
@@ -97,7 +97,7 @@ app.on('ready', async () => {
 
     // USD/BCH & BTC/BCH
     {
-      label: 'USD', sublabel: 'test', type: 'checkbox', id: 'usd', click() { toggleTitle('usd'); setTitle(); },
+      label: 'USD', type: 'checkbox', id: 'usd', click() { toggleTitle('usd'); setTitle(); },
     },
     {
       label: 'BTC', type: 'checkbox', id: 'btc', click() { toggleTitle('btc'); setTitle(); },
