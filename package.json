@@ -6,6 +6,8 @@
   "author": "John Easton",
   "repository": "https://github.com/johneas10/cashbar",
   "devDependencies": {
+    "commitizen": "2.9.6",
+    "cz-conventional-changelog": "2.1.0",
     "electromon": "1.0.9",
     "electron": "2.0.0",
     "electron-builder": "20.11.1",
@@ -21,12 +23,19 @@
   "scripts": {
     "dist": "electron-builder",
     "start": "electron .",
-    "start:watch": "electromon ."
+    "start:watch": "electromon .",
+    "release": "standard-version",
+    "commit": "git-cz"
   },
   "build": {
     "appId": "io.johneas.cashbar",
     "mac": {
       "icon": "images/app-icon.png"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
     }
   }
 }
