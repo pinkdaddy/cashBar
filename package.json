@@ -1,6 +1,6 @@
 {
   "name": "cashbar",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An Electron based menubar application",
   "license": "MIT",
   "author": "John Easton",
