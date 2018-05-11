@@ -50,7 +50,7 @@ const toggleTitle = (title) => {
   appMenu.getMenuItemById(selectedTitle).checked = false;
   appMenu.getMenuItemById(title).checked = true;
 
-  //
+  // change title if required
   if (selectedTitle !== title) {
     selectedTitle = title;
   }
@@ -146,11 +146,12 @@ app.on('ready', async () => {
   // build menu with template, appMenu
   tray.setContextMenu(appMenu);
 
+  // default checked item to usd
   appMenu.getMenuItemById('usd').checked = true;
 
   // rock the cashbar!
   tray.on('right-click', () => shell.openExternal('https://www.youtube.com/watch?v=bJ9r8LMU9bQ'));
 
-  // update app every 1min
-  setInterval(updatePayload, 60000);
+  // update app every 5min
+  setInterval(updatePayload, 300000);
 });
