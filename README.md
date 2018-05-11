@@ -1,6 +1,6 @@
-# Cash Bar
+# Cashbar
 
-Cash Bar is a simple menubar application designed to give you quick access to Bitcoin Cash prices.
+Cashbar is a simple menubar application designed to give you quick access to Bitcoin Cash prices.
 
 ![](./images/header-menu.png)
 
@@ -39,11 +39,6 @@ To run the locally built version, run:
 ```sh
 npm start
 ```
-
-## Release History
-
-* 0.1.0
-    * Initial release
 
 ## Meta
 
