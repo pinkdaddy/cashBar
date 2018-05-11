@@ -1,75 +1,106 @@
-const { app, Menu, shell, Tray } = require('electron'); // eslint-disable-line
+const { app, Menu, shell, Tray, Notification } = require('electron'); // eslint-disable-line
 const path = require('path');
 const getPayload = require('./utils/getPayload');
 const pkg = require('./package.json');
 
 const iconsDir = path.join(__dirname, 'images');
 
-let tray;
+let noInternetNotification;
 let payload;
 let selectedTitle = 'usd';
+let tray;
 
-// returns bool so setTitle knows if it should add a '+'
+// return bool so setTitle knows if it should add a '+'
 const isPositive = title => (title > 0);
 
-// sets title values
+// set title values
 const setTitle = () => {
-  const { data } = payload;
-  const { quotes } = data;
-  const { USD, BTC } = quotes;
+  let usd;
+  let btc;
+
+  if (payload) {
+    const { data } = payload;
+    const { quotes } = data;
+    const { USD, BTC } = quotes;
+
+    usd = USD;
+    btc = BTC;
+  }
 
   if (selectedTitle === 'usd') {
-    tray.setTitle(`$${Math.round(USD.price)}`);
+    tray.setTitle(payload ? `$${Math.round(usd.price)}` : '$0');
   } else if (selectedTitle === 'btc') {
-    tray.setTitle(`₿${BTC.price.toFixed(3)}`);
+    tray.setTitle(payload ? `₿${btc.price.toFixed(3)}` : '₿0');
   } else if (selectedTitle === 'change1hrUsd') {
-    const title = USD.percent_change_1h;
+    const title = payload ? usd.percent_change_1h : '0';
     tray.setTitle(`1h: ${(isPositive(title)) ? '+' : ''}${title}%`);
   } else if (selectedTitle === 'change24hrsUsd') {
-    const title = USD.percent_change_24h;
+    const title = payload ? usd.percent_change_24h : '0';
     tray.setTitle(`24h: ${(isPositive(title)) ? '+' : ''}${title}%`);
   } else if (selectedTitle === 'change7daysUsd') {
-    const title = USD.percent_change_7d;
+    const title = payload ? usd.percent_change_7d : '0';
     tray.setTitle(`7d: ${(isPositive(title)) ? '+' : ''}${title}%`);
   }
 };
 
-// toggles title between USD and BTC
+// toggle title between USD, BTC & Change %
 const toggleTitle = (title) => {
   if (selectedTitle !== title) {
     selectedTitle = title;
   }
 };
 
-// gets payload from API
+// get payload
 const updatePayload = async () => {
-  payload = await getPayload();
+  try {
+    payload = await getPayload();
+  } catch (err) {
+    // try to update every 10seconds until a payload is received
+    setTimeout(updatePayload, 10000);
+  }
   setTitle();
 };
 
-// hides app from dock
+// hide app from dock
 app.dock.hide();
 
 app.on('ready', async () => {
+  // menubar icon
   const icon = `${iconsDir}/icon.png`;
-  payload = await getPayload();
+
+  // create notification for no internet
+  noInternetNotification = new Notification({
+    title: 'CashBar',
+    subtitle: 'No internet connection detected.',
+    body: 'I\'ll keep trying until it\'s back.',
+    icon: `${iconsDir}/app-Icon.png`,
+  });
+
+  // get payload
+  try {
+    payload = await getPayload();
+  } catch (err) {
+    noInternetNotification.show();
+    updatePayload();
+  }
   tray = new Tray(icon);
   setTitle();
 
-  // creates menu
+  // create menu
   const appMenu = Menu.buildFromTemplate([
 
     // USD/BCH & BTC/BCH
     { label: 'USD', type: 'radio', click() { toggleTitle('usd'); setTitle(); } },
     { label: 'BTC', type: 'radio', click() { toggleTitle('btc'); setTitle(); } },
 
-    // % changed in USD
+    // % change in USD
     { label: 'Change % 1hr', type: 'radio', click() { toggleTitle('change1hrUsd'); setTitle(); } },
     { label: 'Change % 24hr', type: 'radio', click() { toggleTitle('change24hrsUsd'); setTitle(); } },
     { label: 'Change % 7d', type: 'radio', click() { toggleTitle('change7daysUsd'); setTitle(); } },
 
     { type: 'separator' },
 
+    // about menu
     {
       label: 'About',
       submenu: [
@@ -77,6 +108,8 @@ app.on('ready', async () => {
         { label: `Version v${pkg.version}`, enabled: false },
       ],
     },
+
+    // contact menu
     {
       label: 'Contact',
       submenu: [
@@ -88,12 +121,12 @@ app.on('ready', async () => {
     { label: 'Quit', role: 'quit' },
   ]);
 
-  // builds menu with template, appMenu
+  // build menu with template, appMenu
   tray.setContextMenu(appMenu);
 
   // rock the cashbar!
   tray.on('right-click', () => shell.openExternal('https://www.youtube.com/watch?v=bJ9r8LMU9bQ'));
 
-  // updates app every 1min
+  // update app every 1min
   setInterval(updatePayload, 60000);
 });
