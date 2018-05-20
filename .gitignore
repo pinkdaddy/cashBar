@@ -1,3 +1,5 @@
 /dist
 /mockedData
 /node_modules
+
+*.todo

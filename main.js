@@ -1,144 +1,79 @@
 const { app, Menu, shell, Tray, Notification } = require('electron'); // eslint-disable-line
 const path = require('path');
-const getPayload = require('./utils/getPayload');
-const pkg = require('./package.json');
+const Store = require('electron-store');
+const getPayload = require('./app/utils/getPayload');
+const setTitle = require('./app/utils/setTitle');
+const contactMenu = require('./app/menus/contact');
+const aboutMenu = require('./app/menus/about');
+const noInternetNotification = require('./app/notifications/noInternet');
+const toggleTitle = require('./app/utils/toggleTitle');
 
-const imagesDir = path.join(__dirname, 'images');
+const imagesDir = path.join(__dirname, '/app/images');
 
-let noInternetNotification;
-let payload;
-let selectedTitle = 'usd';
+const store = new Store();
 let tray;
-let appMenu;
 
-// return bool so setTitle knows if it should add a '+'
-const isPositive = title => (title > 0);
-
-// set title values
-const setTitle = () => {
-  let usd;
-  let btc;
-
-  if (payload) {
-    const { data } = payload;
-    const { quotes } = data;
-    const { USD, BTC } = quotes;
-
-    usd = USD;
-    btc = BTC;
-  }
-
-  if (selectedTitle === 'usd') {
-    tray.setTitle(payload ? `$${Math.round(usd.price)}` : '$0');
-  } else if (selectedTitle === 'btc') {
-    tray.setTitle(payload ? `₿${btc.price.toFixed(3)}` : '₿0');
-  } else if (selectedTitle === 'change1hrUsd') {
-    const title = payload ? usd.percent_change_1h : '0';
-    tray.setTitle(`1h: ${(isPositive(title)) ? '+' : ''}${title}%`);
-  } else if (selectedTitle === 'change24hrsUsd') {
-    const title = payload ? usd.percent_change_24h : '0';
-    tray.setTitle(`24h: ${(isPositive(title)) ? '+' : ''}${title}%`);
-  } else if (selectedTitle === 'change7daysUsd') {
-    const title = payload ? usd.percent_change_7d : '0';
-    tray.setTitle(`7d: ${(isPositive(title)) ? '+' : ''}${title}%`);
-  }
-};
-
-// toggle title between USD, BTC & Change %
-const toggleTitle = (title) => {
-  // uncheck/check selected menu item
-  appMenu.getMenuItemById(selectedTitle).checked = false;
-  appMenu.getMenuItemById(title).checked = true;
-
-  // change title if required
-  if (selectedTitle !== title) {
-    selectedTitle = title;
+const initialiseLocalStorage = () => {
+  if (store.get('selectedTitle') === undefined) {
+    store.set('selectedTitle', 'usd');
   }
 };
 
 // get payload
 const updatePayload = async () => {
   try {
-    payload = await getPayload();
+    const payload = await getPayload();
+    store.set({ payload });
+    console.log(`payload updated @${Date.now()} on ${process.platform}`);
   } catch (err) {
     // try to update every 10seconds until a payload is received
     setTimeout(updatePayload, 10000);
   }
-  setTitle();
+  setTitle(store, tray);
 };
 
 // hide app from dock
 app.dock.hide();
 
 app.on('ready', async () => {
-  // menubar icon
-  const icon = `${imagesDir}/icon.png`;
-
-  // create notification for no internet
-  noInternetNotification = new Notification({
-    title: 'CashBar',
-    subtitle: 'No internet connection detected.',
-    body: 'I\'ll keep trying until it\'s back.',
-    icon: `${imagesDir}/app-icon.png`,
-  });
-
+  initialiseLocalStorage();
   // get payload
   try {
-    payload = await getPayload();
+    const payload = await getPayload();
+    store.set({ payload });
+    console.log(`payload updated @${Date.now()} on ${process.platform}`);
   } catch (err) {
-    noInternetNotification.show();
+    new Notification(noInternetNotification).show();
     updatePayload();
   }
-  tray = new Tray(icon);
-  setTitle();
+  tray = new Tray(`${imagesDir}/icon.png`);
+  setTitle(store, tray);
 
   // create menu
-  appMenu = Menu.buildFromTemplate([
-
-    // USD/BCH & BTC/BCH
+  const appMenu = Menu.buildFromTemplate([
     {
-      label: 'USD', type: 'checkbox', id: 'usd', click() { toggleTitle('usd'); setTitle(); },
+      // USD/BCH & BTC/BCH
+      label: 'USD', type: 'checkbox', id: 'usd', click() { toggleTitle(store, 'usd', appMenu); setTitle(store, tray); },
     },
     {
-      label: 'BTC', type: 'checkbox', id: 'btc', click() { toggleTitle('btc'); setTitle(); },
+      label: 'BTC', type: 'checkbox', id: 'btc', click() { toggleTitle(store, 'btc', appMenu); setTitle(store, tray); },
     },
-
-    // % change in USD
     {
+      // % change in USD
       label: 'Change %',
-      submenu: [
-        {
-          label: '1 Hour', type: 'checkbox', id: 'change1hrUsd', click() { toggleTitle('change1hrUsd'); setTitle(); },
-        },
-        {
-          label: '24 Hours', type: 'checkbox', id: 'change24hrsUsd', click() { toggleTitle('change24hrsUsd'); setTitle(); },
-        },
-        {
-          label: '7 Days', type: 'checkbox', id: 'change7daysUsd', click() { toggleTitle('change7daysUsd'); setTitle(); },
-        },
-      ],
+      submenu: [{
+        label: '1 Hour', type: 'checkbox', id: 'change1hrUsd', click() { toggleTitle(store, 'change1hrUsd', appMenu); setTitle(store, tray); },
+      },
+      {
+        label: '24 Hours', type: 'checkbox', id: 'change24hrsUsd', click() { toggleTitle(store, 'change24hrsUsd', appMenu); setTitle(store, tray); },
+      },
+      {
+        label: '7 Days', type: 'checkbox', id: 'change7daysUsd', click() { toggleTitle(store, 'change7daysUsd', appMenu); setTitle(store, tray); },
+      }],
     },
-
     { type: 'separator' },
-
-    // contact menu
-    {
-      label: 'Contact',
-      submenu: [
-        { label: 'Twitter', click() { shell.openExternal('https://twitter.com/johneas10'); } },
-        { label: 'Github', click() { shell.openExternal('https://github.com/johneas10/cashBar'); } },
-      ],
-    },
-
-    // about menu
-    {
-      label: 'About',
-      submenu: [
-        { label: `v${pkg.version}`, enabled: false },
-        { label: 'Check for updates', click() { shell.openExternal('https://github.com/johneas10/cashBar/releases'); } },
-      ],
-    },
-
+    contactMenu,
+    aboutMenu,
     { type: 'separator' },
     { label: 'Quit', role: 'quit' },
   ]);
@@ -147,9 +82,8 @@ app.on('ready', async () => {
   tray.setContextMenu(appMenu);
 
   // default checked item to usd
-  appMenu.getMenuItemById('usd').checked = true;
+  appMenu.getMenuItemById(store.get('selectedTitle')).checked = true;
 
-  // rock the cashbar!
   tray.on('right-click', () => shell.openExternal('https://www.youtube.com/watch?v=bJ9r8LMU9bQ'));
 
   // update app every 5min

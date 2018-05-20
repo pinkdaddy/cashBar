@@ -14,7 +14,6 @@ module.exports = async () => {
   } catch (err) {
     throw new Error(err);
   }
-
   // this can be used for development without an internet connection.
   // return require('../fixtures/payload.json');
 };
