@@ -2,19 +2,23 @@
 
 Cashbar is a simple menubar application designed to give you quick access to Bitcoin Cash prices.
 
-![](./images/header-menu.png)
+![](./app/images/header-menu.png)
 
 It will show prices in either USD/BCH...
 
-![](./images/header-usd.png)
+![](./app/images/header-usd.png)
 
 ...BTC/BCH....
 
-![](./images/header-btc.png)
+![](./app/images/header-btc.png)
 
 ...or a change percentage over 1hr, 24hrs or 7days.
 
-![](./images/header-percentage.png)
+![](./app/images/header-percentage.png)
+
+Windows support is also available. Due to OS limitations, I can only display prices while hovering over the icon:
+
+![](./app/images/header-windows.png)
 
 ## Installation
 
