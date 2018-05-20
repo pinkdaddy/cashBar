@@ -18,15 +18,18 @@ It will show prices in either USD/BCH...
 
 ## Installation
 
-macOS: Download the latest DMG from the releases page [here.](https://github.com/johneas10/cashbar/releases)
+macOS: Download the latest .DMG from the releases page [here.](https://github.com/johneas10/cashbar/releases)
 Then open it up and drag the app to applications folder.
+
+Windows: Download the latest .EXE from the releases page [here](https://github.com/johneas10/cashbar/releases) and run the installer.
 
 Linux: ToDo.
 
-Windows: ToDo.
 
 
 ## Development setup
+
+#### (macOS)
 
 Make sure you have Node installed on your computer.
 Then you can simply clone the repository and run the following to install its dependencies:

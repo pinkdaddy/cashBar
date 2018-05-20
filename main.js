@@ -24,7 +24,6 @@ const updatePayload = async () => {
   try {
     const payload = await getPayload();
     store.set({ payload });
-    console.log(`payload updated @${Date.now()} on ${process.platform}`);
   } catch (err) {
     // try to update every 10seconds until a payload is received
     setTimeout(updatePayload, 10000);
@@ -33,7 +32,9 @@ const updatePayload = async () => {
 };
 
 // hide app from dock
-app.dock.hide();
+if (process.platform === 'darwin') {
+  app.dock.hide();
+}
 
 app.on('ready', async () => {
   initialiseLocalStorage();
@@ -41,7 +42,6 @@ app.on('ready', async () => {
   try {
     const payload = await getPayload();
     store.set({ payload });
-    console.log(`payload updated @${Date.now()} on ${process.platform}`);
   } catch (err) {
     new Notification(noInternetNotification).show();
     updatePayload();

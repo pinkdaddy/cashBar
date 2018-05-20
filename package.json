@@ -36,6 +36,9 @@
     "appId": "io.johneas.cashbar",
     "mac": {
       "icon": "app/images/app-icon.png"
+    },
+    "win": {
+      "icon": "app/images/app-icon.png"
     }
   },
   "config": {
