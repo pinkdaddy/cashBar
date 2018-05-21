@@ -1,4 +1,7 @@
 # Cashbar
+[![Github All Releases](https://img.shields.io/github/downloads/johneas10/cashbar/total.svg)]()
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+
 
 Cashbar is a simple menubar application designed to give you quick access to Bitcoin Cash prices.
 
