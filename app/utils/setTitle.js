@@ -1,4 +1,4 @@
-const isPositive = require('../utils/isPositive');
+const isPositive = require('../utils/isPositive/isPositive');
 
 const setTitle = (input, tray) => {
   if (process.platform === 'darwin') {

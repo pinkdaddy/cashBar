@@ -8,8 +8,8 @@
   "devDependencies": {
     "commitizen": "2.9.6",
     "cz-conventional-changelog": "2.1.0",
-    "electromon": "1.0.9",
-    "electron": "2.0.0",
+    "electromon": "1.0.10",
+    "electron": "2.0.2",
     "electron-builder": "20.11.1",
     "eslint": "4.19.1",
     "eslint-config-airbnb-base": "12.1.0",

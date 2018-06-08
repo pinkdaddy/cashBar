@@ -1,8 +1,9 @@
 const { app, Menu, shell, Tray, Notification } = require('electron'); // eslint-disable-line
 const path = require('path');
 const Store = require('electron-store');
-const getPayload = require('./app/utils/getPayload');
+const getPayload = require('./app/serviceCalls/getPayload');
 const setTitle = require('./app/utils/setTitle');
+const donateMenu = require('./app/menus/donate');
 const contactMenu = require('./app/menus/contact');
 const aboutMenu = require('./app/menus/about');
 const noInternetNotification = require('./app/notifications/noInternet');
@@ -19,7 +20,6 @@ const initialiseLocalStorage = () => {
   }
 };
 
-// get payload
 const updatePayload = async () => {
   try {
     const payload = await getPayload();
@@ -31,14 +31,12 @@ const updatePayload = async () => {
   setTitle(store, tray);
 };
 
-// hide app from dock
 if (process.platform === 'darwin') {
   app.dock.hide();
 }
 
 app.on('ready', async () => {
   initialiseLocalStorage();
-  // get payload
   try {
     const payload = await getPayload();
     store.set({ payload });
@@ -49,17 +47,14 @@ app.on('ready', async () => {
   tray = new Tray(`${imagesDir}/icon.png`);
   setTitle(store, tray);
 
-  // create menu
   const appMenu = Menu.buildFromTemplate([
     {
-      // USD/BCH & BTC/BCH
       label: 'USD', type: 'checkbox', id: 'usd', click() { toggleTitle(store, 'usd', appMenu); setTitle(store, tray); },
     },
     {
       label: 'BTC', type: 'checkbox', id: 'btc', click() { toggleTitle(store, 'btc', appMenu); setTitle(store, tray); },
     },
     {
-      // % change in USD
       label: 'Change %',
       submenu: [{
         label: '1 Hour', type: 'checkbox', id: 'change1hrUsd', click() { toggleTitle(store, 'change1hrUsd', appMenu); setTitle(store, tray); },
@@ -72,13 +67,13 @@ app.on('ready', async () => {
       }],
     },
     { type: 'separator' },
+    donateMenu,
     contactMenu,
     aboutMenu,
     { type: 'separator' },
     { label: 'Quit', role: 'quit' },
   ]);
 
-  // build menu with template, appMenu
   tray.setContextMenu(appMenu);
 
   // default checked item to usd
