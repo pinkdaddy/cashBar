@@ -3,7 +3,7 @@
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 
-Cashbar is a simple menubar application designed to give you quick access to Bitcoin Cash prices.
+Cashbar is a simple application designed to give you quick access to Bitcoin Cash prices from you desktop
 
 ![](./app/images/header-menu.png)
 
@@ -30,33 +30,29 @@ Then open it up and drag the app to applications folder.
 
 Windows: Download the latest .EXE from the releases page [here](https://github.com/johneas10/cashbar/releases) and run the installer.
 
-Linux: ToDo.
-
-
-
 ## Development setup
 
-#### (macOS)
+#### Prerequisites:
+  The following instructions assume you:
+  - have nodejs & NPM installed. Download and install the latest LTS Installer from [here](https://nodejs.org/en/download/) if you don't.
 
-Make sure you have Node installed on your computer.
-Then you can simply clone the repository and run the following to install its dependencies:
-
+Open up your terminal app and clone the repository:
+```
+git clone git@github.com:johneas10/cashbar
+```
+Install the dependencies
 ```sh
 npm install
 ```
-
 To run the locally built version, run:
 ```sh
 npm start
 ```
+There other development scripts available in `package.json`
 
-## Meta
-
-John Easton – [@johneas10](https://twitter.com/johneas10)
-
-<https://github.com/johneas10/cashbar>
-
-Distributed under the MIT license. See ``LICENSE`` for more information.
+## Built With
+- [Electron](https://electronjs.org/)
+- [CoinMarketCap API](https://coinmarketcap.com/api/)
 
 
 ## Contributing
@@ -65,4 +61,4 @@ Distributed under the MIT license. See ``LICENSE`` for more information.
 2. Create your feature branch (`git checkout -b feature/BCHPLZ`)
 3. Commit your changes (`git commit -am 'Add some BCHPLZ'`).
 4. Push to the branch (`git push origin feature/BCHPLZ`)
-5. Create a new Pull Request against the Develop branch.
+5. Create a new Pull Request against the Master branch.
