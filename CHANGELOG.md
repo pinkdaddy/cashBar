@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/johneas10/cashbar/compare/v0.3.1...v0.4.0) (2018-06-08)
+
+
+### Features
+
+* **app:** codesign application ([ee90280](https://github.com/johneas10/cashbar/commit/ee90280))
+* **menu:** add donate menu ([0ed1b66](https://github.com/johneas10/cashbar/commit/0ed1b66))
+
+
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://github.com/johneas10/cashbar/compare/v0.3.0...v0.3.1) (2018-05-21)
 
