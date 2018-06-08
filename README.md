@@ -26,7 +26,7 @@ Windows support is also available. Due to OS limitations, I can only display pri
 ## Installation
 
 macOS: Download the latest .DMG from the releases page [here.](https://github.com/johneas10/cashbar/releases)
-Then open it up and drag the app to applications folder.
+Then open it up and drag the app to applications folder. The application is now signed!
 
 Windows: Download the latest .EXE from the releases page [here](https://github.com/johneas10/cashbar/releases) and run the installer.
 
